@@ -1,0 +1,22 @@
+sebk_small_orm:
+  connections:
+    default:
+      type: mysql
+      host: "%env(database_host)%"
+      database: "%env(database_name)%"
+      user: "%env(database_user)%"
+      password: "%env(database_password)%"
+  bundles:
+    SmallSchedulerModelBundle:
+      connections:
+        default:
+          dao_namespace: App\SmallSchedulerModelBundle\Dao
+          model_namespace: App\SmallSchedulerModelBundle\Model
+          validator_namespace: App\SmallSchedulerModelBundle\Validator
+    SebkSmallUserBundle:
+      vendor: true
+      connections:
+        default:
+          dao_namespace: Sebk\SmallUserBundle\Dao
+          model_namespace: Sebk\SmallUserBundle\Model
+          validator_namespace: Sebk\SmallUserBundle\Validator

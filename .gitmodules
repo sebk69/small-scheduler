@@ -1,0 +1,6 @@
+[submodule "Sebk/SmallOrmBundle"]
+	path = Sebk/SmallOrmBundle
+	url = git@github.com:sebk69/SebkSmallOrmBundle.git
+[submodule "Sebk/SmallUserBundle"]
+	path = Sebk/SmallUserBundle
+	url = git@github.com:sebk69/SebkSmallUserBundle.git
