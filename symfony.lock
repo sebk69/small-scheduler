@@ -155,8 +155,14 @@
     "symfony/inflector": {
         "version": "v4.1.4"
     },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.9.0"
+    },
+    "symfony/polyfill-php72": {
+        "version": "v1.11.0"
     },
     "symfony/property-access": {
         "version": "v4.1.4"
