@@ -27,6 +27,8 @@ use Sebk\SmallOrmBundle\Dao\Model;
  * @method setTrash($value)
  * @method getSentTrace()
  * @method setSentTrace($value)
+ * @method getEnabled()
+ * @method setEnabled($value)
  * @method \App\SmallSchedulerModelBundle\Model\Group getTaskGroup()
  * @method \App\SmallSchedulerModelBundle\Model\TaskChangeLog[] getTasksChangesLogs()
  * @method \App\SmallSchedulerModelBundle\Model\TaskExecutionLog[] getTasksExecutionsLogs()
