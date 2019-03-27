@@ -39,7 +39,10 @@ class TaskController extends Controller
         /** @var Task $daoTask */
         $daoTask = $daoFactory->get("SmallSchedulerModelBundle", "Task");
         /** @var \App\SmallSchedulerModelBundle\Model\Task[] $tasks */
-        $tasks = $daoTask->listTaskForGroup($groupId, true);
+        $tasks = $daoTask->listTaskForGroup($groupId);
+        foreach ($tasks as $task) {
+            $task->loadToMany("tasksChangesLogs", [["taskChangeLog" => "taskChangeLogUser"]]);
+        }
 
         // Response
         return new Response(json_encode($tasks));
@@ -115,7 +118,7 @@ class TaskController extends Controller
         $log = $daoTaskChangeLog->newModel();
         $log->setTaskId($task->getId());
         $log->setUserId($this->getUser()->getId());
-        $log->setDate("Y-m-d H:i:s");
+        $log->setDate(date("Y-m-d H:i:s"));
         $log->setAction(TaskChangeLog::DELETE_STRING_LOG);
         $log->persist();
 
@@ -144,14 +147,11 @@ class TaskController extends Controller
         $task = $daoTask->findOneBy(["id" => $id]);
 
         // Toggle enabled
-        if($task->getEnabled() == 1) {
+        if($task->getEnabled() == "1") {
             $task->setEnabled("0");
         } else {
             $task->setEnabled("1");
         }
-
-        /** @var \App\SmallSchedulerModelBundle\Model\Task $task */
-        $task = $daoTask->findOneBy(["id" => $id]);
 
         // Perist task
         $connections->get()->startTransaction();
@@ -161,8 +161,8 @@ class TaskController extends Controller
         $log = $daoTaskChangeLog->newModel();
         $log->setTaskId($task->getId());
         $log->setUserId($this->getUser()->getId());
-        $log->setDate("Y-m-d H:i:s");
-        $log->setAction(TaskChangeLog::DELETE_STRING_LOG);
+        $log->setDate(date("Y-m-d H:i:s"));
+        $log->setAction($task->getEnabled() == "1" ? TaskChangeLog::ENABLE_STRING_LOG : TaskChangeLog::DISABLE_STRING_LOG);
         $log->persist();
 
         $task->persist();

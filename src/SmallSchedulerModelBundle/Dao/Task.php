@@ -35,23 +35,15 @@ class Task extends AbstractDao
      * @throws \Sebk\SmallOrmBundle\QueryBuilder\BracketException
      * @throws \Sebk\SmallOrmBundle\QueryBuilder\QueryBuilderException
      */
-    public function listTaskForGroup($groupId, $withLogs = false)
+    public function listTaskForGroup($groupId)
     {
         $query = $this->createQueryBuilder("task");
-        if($withLogs) {
-            $query->leftJoin("task", "tasksChangesLogs")->endJoin()
-                ->leftJoin("tasksChangesLogs", "taskChangeLogUser")->endJoin();
-        }
 
         $query->where()
             ->firstCondition($query->getFieldForCondition("groupId"), "=", ":groupId")
             ->andCondition($query->getFieldForCondition("trash"), "=", 0)
         ;
         $query->setParameter("groupId", $groupId);
-
-        if($withLogs) {
-            $query->addOrderBy("date", "tasksChangesLogs", "DESC");
-        }
 
         return $this->getResult($query);
     }

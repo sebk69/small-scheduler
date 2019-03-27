@@ -44,7 +44,7 @@ class Submit
         // for each task
         foreach ($tasks as $task) {
             // Is it time to launch ?
-            if ($task->timeToLaunch()) {
+            if ($task->getEnabled() == 1 && $task->timeToLaunch()) {
                 // Check not already launched for this time
                 if($task->getSentTrace() != $task->getCurrentTrace()) {
                     // Submit

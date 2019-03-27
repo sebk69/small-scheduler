@@ -13,6 +13,8 @@ class TaskChangeLog extends AbstractDao
     const CHANGE_COMMAND_STRING_LOG = "Command has been changed";
     const CHANGE_QUEUE_STRING_LOG = "Queue has been changed";
     const DELETE_STRING_LOG = "Task has been removed";
+    const ENABLE_STRING_LOG = "Task has been enabled";
+    const DISABLE_STRING_LOG = "Task has been disabled";
 
     protected function build()
     {
