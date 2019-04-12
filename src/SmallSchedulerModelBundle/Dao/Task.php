@@ -37,13 +37,19 @@ class Task extends AbstractDao
      */
     public function listTaskForGroup($groupId)
     {
-        $query = $this->createQueryBuilder("task");
+        $query = $this->createQueryBuilder("task")
+             ->leftJoin("task", "tasksChangesLogs")->endJoin()
+             ->leftJoin("tasksChangesLogs", "taskChangeLogUser")->endJoin()
+        ;
 
         $query->where()
             ->firstCondition($query->getFieldForCondition("groupId"), "=", ":groupId")
             ->andCondition($query->getFieldForCondition("trash"), "=", 0)
         ;
         $query->setParameter("groupId", $groupId);
+
+        $query->addOrderBy("id", "task", "ASC");
+        $query->addOrderBy("id", "tasksChangesLogs", "DESC");
 
         return $this->getResult($query);
     }
