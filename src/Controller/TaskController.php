@@ -40,9 +40,6 @@ class TaskController extends Controller
         $daoTask = $daoFactory->get("SmallSchedulerModelBundle", "Task");
         /** @var \App\SmallSchedulerModelBundle\Model\Task[] $tasks */
         $tasks = $daoTask->listTaskForGroup($groupId);
-        foreach ($tasks as $task) {
-            $task->loadToMany("tasksChangesLogs", [["taskChangeLog" => "taskChangeLogUser"]]);
-        }
 
         // Response
         return new Response(json_encode($tasks));
