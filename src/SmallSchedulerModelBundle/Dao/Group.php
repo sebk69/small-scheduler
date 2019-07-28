@@ -12,9 +12,10 @@ class Group extends AbstractDao
             ->addPrimaryKey("id", "id")
             ->addField("creation_user_id", "creationUserId")
             ->addField("label", "label")
-            ->addField("trash", "trash", "0")
+            ->addField("trash", "trash", 0)
             ->addToOne("groupCreationUser", ["creationUserId" => "id"], "User", "SebkSmallUserBundle")
             ->addToMany("tasks", ["id" => "groupId"], "Task")
+            ->addToMany("tasksFailuresNotifications", ["id" => "groupId"], "TaskFailureNotification")
         ;
     }
 }

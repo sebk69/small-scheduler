@@ -26,7 +26,7 @@ class UserApiController extends AbstractUserApiController
      */
     public function getUserDao(): AbstractDao
     {
-        return $this->container->get("sebk_small_orm_dao")->get("SebkSmallUserBundle", "User");
+        return $this->container->get("sebk_small_orm_dao")->get("SmallSchedulerModelBundle", "User");
     }
 
     /**

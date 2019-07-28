@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * @method setTrash($value)
  * @method \Sebk\SmallUserBundle\Model\User getGroupCreationUser()
  * @method \App\SmallSchedulerModelBundle\Model\Task[] getTasks()
+ * @method \App\SmallSchedulerModelBundle\Model\TaskFailureNotification[] getTasksFailuresNotifications()
  */
 class Group extends Model
 {

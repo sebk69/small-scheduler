@@ -1,3 +1,5 @@
+START TRANSACTION;
+
 CREATE TABLE IF NOT EXISTS `group` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `creation_user_id` INT NOT NULL,
@@ -70,4 +72,6 @@ CREATE TABLE IF NOT EXISTS `task_change_log` (
     REFERENCES `user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
+ENGINE = InnoDB;
+
+COMMIT;
