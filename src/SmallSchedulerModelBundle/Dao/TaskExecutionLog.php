@@ -78,4 +78,30 @@ class TaskExecutionLog extends AbstractDao
 
         return $this->getResult($query);
     }
+
+    /**
+     * Purge logs for a task and a period
+     * @param $taskId
+     * @param $days
+     * @throws \Sebk\SmallOrmBundle\Database\ConnectionException
+     * @throws \Sebk\SmallOrmBundle\QueryBuilder\BracketException
+     * @throws \Sebk\SmallOrmBundle\QueryBuilder\QueryBuilderException
+     */
+    public function purge($taskId, $days)
+    {
+        // Set date limit
+        $date = new \DateTime();
+        $date->sub(new \DateInterval("P".$days."D"));
+
+        // create query
+        $query = $this->createDeleteBuilder();
+        $query->where()
+            ->firstCondition($query->getFieldForCondition("taskId"), "=", ":taskId")
+            ->andCondition($query->getFieldForCondition("date"), "<", ":date");
+
+        $query->setParameter("taskId", $taskId)
+            ->setParameter("date", $date->format("Y-m-d H:i:s"));
+
+        $this->executeDelete($query);
+    }
 }

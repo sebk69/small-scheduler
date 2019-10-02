@@ -2,6 +2,7 @@
 namespace App\SmallSchedulerModelBundle\Model;
 
 use Sebk\SmallOrmBundle\Dao\Model;
+use \App\SmallSchedulerModelBundle\Dao\Parameter;
 
 /**
  * @method getId()
@@ -24,4 +25,13 @@ use Sebk\SmallOrmBundle\Dao\Model;
  */
 class TaskExecutionLog extends Model
 {
+    public function beforeSave()
+    {
+        // Purge
+        /** @var Parameter $daoParameter */
+        $daoParameter = $this->container->get("sebk_small_orm_dao")->get("SmallSchedulerModelBundle", "Parameter");
+        /** @var \App\SmallSchedulerModelBundle\Model\Parameter $parameter */
+        $parameter = $daoParameter->findOneBy(["key" => Parameter::PURGE_EXECUTION_LOGS]);
+        $this->getDao()->purge($this->getTaskId(), $parameter->getValue());
+    }
 }
