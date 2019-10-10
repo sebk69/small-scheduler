@@ -11,11 +11,14 @@
         "sebk/small-orm-bundle": "dev-symfony4",
         "sebk/small-user-bundle": "dev-master",
         "sensio/framework-extra-bundle": "^5.2",
+        "symfony/asset": "4.1.*",
         "symfony/console": "*",
         "symfony/flex": "^1.1",
+        "symfony/form": "4.1.*",
         "symfony/framework-bundle": "4.1.7",
         "symfony/security-bundle": "^4.0",
         "symfony/swiftmailer-bundle": "^3.2",
+        "symfony/twig-bundle": "4.1.*",
         "symfony/yaml": "*"
     },
     "require-dev": {

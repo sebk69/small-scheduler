@@ -10,6 +10,7 @@ namespace App\Controller;
 
 
 use App\SmallSchedulerModelBundle\Dao\TaskFailureNotification;
+use Sebk\SmallOrmBundle\Factory\Connections;
 use Sebk\SmallOrmBundle\Factory\Dao;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,5 +30,38 @@ class TaskFailureNotificationController extends Controller
 
         // reponse
         return new Response(json_encode($state));
+    }
+
+    /**
+     * @Route("/api/tasks/failure-notification", methods={"POST"})
+     */
+    public function post(Connections $connections, Dao $daoFactory, Request $request) {
+        // Get body
+        $data = json_decode($request->getContent());
+
+        // Foreach element
+        /** @var TaskFailureNotification $daoTaskFailureNotification */
+        $daoTaskFailureNotification = $daoFactory->get("SmallSchedulerModelBundle", "TaskFailureNotification");
+        $connections->get()->startTransaction();
+        foreach ($data as $element) {
+            /** @var \App\SmallSchedulerModelBundle\Model\TaskFailureNotification $taskFailureNotification */
+            $taskFailureNotification = $daoTaskFailureNotification->makeModelFromStdClass($element);
+
+            // Check rigths
+            if($taskFailureNotification->getUserId() != $this->getUser()->getId()) {
+                return new Response("Forbidden", Response::HTTP_UNAUTHORIZED);
+            }
+
+            // Update database
+            if($taskFailureNotification->getActive() == "1" && !$taskFailureNotification->fromDb) {
+                $taskFailureNotification->persist();
+            } elseif($taskFailureNotification->getActive() == "0" && $taskFailureNotification->fromDb) {
+                $taskFailureNotification->delete();
+            }
+        }
+        $connections->get()->commit();
+
+        // List updated
+        return $this->listForMyself($daoFactory, $request);
     }
 }

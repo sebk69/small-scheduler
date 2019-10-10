@@ -1,0 +1,9 @@
+START TRANSACTION;
+
+CREATE TABLE `token` (
+    `id` INT NOT NULL AUTO_INCREMENT ,
+    `token` varchar(255) NOT NULL ,
+    `data` TEXT NOT NULL ,
+PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+COMMIT;
