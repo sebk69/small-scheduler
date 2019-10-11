@@ -8,6 +8,7 @@
 namespace App\Controller;
 
 
+use App\Scheduler\Submit;
 use App\SmallSchedulerModelBundle\Dao\Group;
 use App\SmallSchedulerModelBundle\Dao\Task;
 use App\SmallSchedulerModelBundle\Dao\TaskChangeLog;
@@ -132,7 +133,8 @@ class TaskController extends Controller
     /**
      * @route("/api/tasks/{id}/toggleEnabled", methods={"POST"})
      */
-    public function toggleTask($id, Dao $daoFactory, Connections $connections) {
+    public function toggleTask($id, Dao $daoFactory, Connections $connections)
+    {
         // Instaciate dao
         /** @var Task $daoTask */
         $daoTask = $daoFactory->get("SmallSchedulerModelBundle", "Task");
@@ -168,5 +170,27 @@ class TaskController extends Controller
 
         // Response task
         return new Response(json_encode($task));
+    }
+
+    /**
+     * @route("/api/tasks/{id}/execute", methods={"POST"})
+     */
+    public function execute($id, Dao $daoFactory, Submit $submit, Request $request)
+    {
+        // Instaciate dao
+        /** @var Task $daoTask */
+        $daoTask = $daoFactory->get("SmallSchedulerModelBundle", "Task");
+
+        // Get task
+        try {
+            $task = $daoTask->findOneBy(["id" => $id]);
+        } catch (\Exception $e) {
+            return new Response("Task not found", Response::HTTP_BAD_REQUEST);
+        }
+
+        // submit it
+        $submit->submitTask($task);
+
+        return new Response("");
     }
 }

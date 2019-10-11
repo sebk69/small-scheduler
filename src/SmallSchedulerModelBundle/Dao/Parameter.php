@@ -6,6 +6,7 @@ use Sebk\SmallOrmBundle\Dao\AbstractDao;
 class Parameter extends AbstractDao
 {
     const PURGE_EXECUTION_LOGS = "purge-execution-logs";
+    const EMAIL_FROM = "email-from";
 
     protected function build()
     {

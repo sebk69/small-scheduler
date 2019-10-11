@@ -17,7 +17,7 @@ class Submit
 {
     const QUEUE_PREFIX = "SmallScheduler#";
 
-    public $daoFactory;
+    protected $daoFactory;
 
     public function __construct(Dao $daoFactory)
     {
@@ -68,7 +68,7 @@ class Submit
      * Submit task to message broker
      * @param \App\SmallSchedulerModelBundle\Model\Task $task
      */
-    protected function submitTask(\App\SmallSchedulerModelBundle\Model\Task $task)
+    public function submitTask(\App\SmallSchedulerModelBundle\Model\Task $task)
     {
         // Initialize message broker
         $connection = new AMQPStreamConnection("message-broker", 5672, "guest", "guest");

@@ -1,3 +1,5 @@
 swiftmailer:
     url: 'smtp://small-scheduler-mailer:25'
-    spool: { type: 'memory' }
+    spool:
+        type: file
+        path: /tmp/mail_spool

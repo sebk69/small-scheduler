@@ -1,0 +1,7 @@
+#!/bin/bash
+
+while :
+do
+    /server/bin/console swiftmailer:spool:send
+    sleep 1
+done

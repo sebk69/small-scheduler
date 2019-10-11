@@ -9,6 +9,7 @@
 namespace App\Security;
 
 
+use App\SmallSchedulerModelBundle\Dao\Parameter;
 use App\SmallSchedulerModelBundle\Dao\Token;
 use Sebk\SmallOrmBundle\Factory\Dao;
 use Sebk\SmallUserBundle\Security\UserProvider;
@@ -19,6 +20,7 @@ class LostPassword
     protected $userProvider;
     protected $mailer;
     protected $twig;
+    protected $emailFrom;
 
     public function __construct(Dao $daoFactory, UserProvider $userProvider, \Swift_Mailer $mailer, \Twig_Environment $twig)
     {
@@ -26,6 +28,12 @@ class LostPassword
         $this->userProvider = $userProvider;
         $this->mailer = $mailer;
         $this->twig = $twig;
+
+        /** @var Parameter $daoParameter */
+        $daoParameter = $this->daoFactory->get("SmallSchedulerModelBundle", "Parameter");
+        /** @var \App\SmallSchedulerModelBundle\Model\Parameter $parameter */
+        $parameter = $daoParameter->findOneBy(["key" => Parameter::EMAIL_FROM]);
+        $this->emailFrom = $parameter->getValue();
     }
 
     public function sendEmail($username)
@@ -43,8 +51,8 @@ class LostPassword
         $token = $tokenDao->generate($data);
 
         // Send message
-        $message = (new \Swift_Message("Lost password"))
-            ->setFrom($userModel->getEmail())
+        $message = (new \Swift_Message("Small Scheduler - Lost password"))
+            ->setFrom($this->emailFrom)
             ->setTo($userModel->getEmail())
             ->setBody($this->twig->render("security/lostPassword.email.twig", [
                 "token" => $token->getToken(),
