@@ -180,4 +180,25 @@ class UserApiController extends AbstractUserApiController
             return new Response("Invalid token", Response::HTTP_UNAUTHORIZED);
         }
     }
+
+    /**
+     * @route("/api/users", methods={"GET"})
+     * @param Request $request
+     * @return Response
+     */
+    public function getUserList(Request $request)
+    {
+        return $this->listUsers($request);
+    }
+
+    /**
+     * @route("/api/users", methods={"POST"})
+     * @param UserProvider $userProvider
+     * @param Request $request
+     * @return mixed|Response
+     */
+    public function createUser(UserProvider $userProvider, Request $request)
+    {
+        return parent::createUser($userProvider, $request);
+    }
 }
