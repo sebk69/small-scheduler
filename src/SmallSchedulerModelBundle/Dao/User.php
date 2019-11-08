@@ -10,6 +10,8 @@ class User extends \Sebk\SmallUserBundle\Dao\User
     {
         parent::build();
 
-        $this->addToMany("taskFailureNotifications", ["id" => "userId"], "taskFailureNotification");
+        $this->addToMany("taskFailureNotifications", ["id" => "userId"], "taskFailureNotification")
+            ->addToMany("userGroups", ["id" => "userId"], "UserGroup")
+        ;
     }
 }

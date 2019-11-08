@@ -1,19 +1,19 @@
 START TRANSACTION;
 
 CREATE TABLE `small_scheduler`.`user_group` (
-    `id_user_group` INT NOT NULL,
-    `id_user` INT NOT NULL,
-    `id_group` INT NOT NULL,
-    PRIMARY KEY (`id_user_group`),
-    INDEX `userGroupUser_idx` (`id_user` ASC),
-    INDEX `userGroupGroup_idx` (`id_group` ASC),
+    `id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    `group_id` INT NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `userGroupUser_idx` (`user_id` ASC),
+    INDEX `userGroupGroup_idx` (`group_id` ASC),
     CONSTRAINT `userGroupUser`
-        FOREIGN KEY (`id_user`)
+        FOREIGN KEY (`user_id`)
             REFERENCES `small_scheduler`.`user` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION,
     CONSTRAINT `userGroupGroup`
-        FOREIGN KEY (`id_group`)
+        FOREIGN KEY (`group_id`)
             REFERENCES `small_scheduler`.`group` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION);

@@ -16,6 +16,7 @@ class Group extends AbstractDao
             ->addToOne("groupCreationUser", ["creationUserId" => "id"], "User", "SebkSmallUserBundle")
             ->addToMany("tasks", ["id" => "groupId"], "Task")
             ->addToMany("tasksFailuresNotifications", ["id" => "groupId"], "TaskFailureNotification")
+            ->addToMany("groupUsers", ["id" => "groupId"], "UserGroup")
         ;
     }
 }
