@@ -9,10 +9,12 @@ namespace App\Controller;
 
 use App\SmallSchedulerModelBundle\Dao\Group;
 use Sebk\SmallOrmBundle\Factory\Dao;
+use Sebk\SmallUserBundle\Security\GroupVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class GroupController
@@ -25,10 +27,21 @@ class GroupController extends Controller
      */
     public function getGroups(Dao $daoFactory)
     {
+        // Get all groups
         /** @var Group $groupDao */
         $groupDao = $daoFactory->get("SmallSchedulerModelBundle", "Group");
+        $groups = $groupDao->findBy(["trash" => 0], [[null => "groupCreationUser"]]);
 
-        return new Response(json_encode($groupDao->findBy(["trash" => 0], [[null => "groupCreationUser"]])));
+        // filter by rigths
+        foreach ($groups as $key => $group) {
+            try {
+                $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $groups);
+            } catch (AccessDeniedException $e) {
+                unset($groups[$key]);
+            }
+        }
+
+        return new Response(json_encode(array_values($groups)));
     }
 
     /**
