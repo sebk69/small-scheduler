@@ -14,7 +14,7 @@ class TaskFailureNotification extends AbstractDao
             ->addField("user_id", "userId")
             ->addField("group_id", "groupId")
             ->addToOne("taskFailureNotificationGroup", ["groupId" => "id"], "Group")
-            ->addToOne("taskFailureNotificationUser", ["userId" => "id"], "User", "SebkSmallUserBundle")
+            ->addToOne("taskFailureNotificationUser", ["userId" => "id"], "User")
         ;
     }
 

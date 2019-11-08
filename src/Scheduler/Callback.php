@@ -97,7 +97,12 @@ class Callback
             $emails = [];
             foreach ($task->getTaskGroup()->getTasksFailuresNotifications() as $taskFailureNotification) {
                 $taskFailureNotification->loadToOne("taskFailureNotificationUser");
-                $emails[] = $taskFailureNotification->getTaskFailureNotificationUser()->getEmail();
+                $taskFailureNotification->getTaskFailureNotificationUser()->loadToMany("userGroups");
+                foreach ($taskFailureNotification->getTaskFailureNotificationUser()->getUserGroups() as $userGroup) {
+                    if($userGroup->getGroupId() == $taskFailureNotification->getGroupId()) {
+                        $emails[] = $taskFailureNotification->getTaskFailureNotificationUser()->getEmail();
+                    }
+                }
             }
 
             // Send message

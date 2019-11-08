@@ -23,8 +23,8 @@ namespace App\SmallSchedulerModelBundle\Model;
  * @method setUpdatedAt($value)
  * @method getRoles()
  * @method setRoles($value)
- * @method \App\SmallSchedulerModelBundle\Model\UserGroup getUserGroups()
  * @method \App\SmallSchedulerModelBundle\Model\TaskFailureNotification[] getTaskFailureNotifications()
+ * @method \App\SmallSchedulerModelBundle\Model\UserGroup[] getUserGroups()
  */
 class User extends \Sebk\SmallUserBundle\Model\User
 {

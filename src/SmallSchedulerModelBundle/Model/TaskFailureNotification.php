@@ -11,7 +11,7 @@ use Sebk\SmallOrmBundle\Dao\Model;
  * @method getGroupId()
  * @method setGroupId($value)
  * @method \App\SmallSchedulerModelBundle\Model\Group getTaskFailureNotificationGroup()
- * @method \Sebk\SmallUserBundle\Model\User getTaskFailureNotificationUser()
+ * @method \App\SmallSchedulerModelBundle\Model\User getTaskFailureNotificationUser()
  */
 class TaskFailureNotification extends Model
 {

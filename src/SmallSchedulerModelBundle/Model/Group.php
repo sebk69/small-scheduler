@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * @method \Sebk\SmallUserBundle\Model\User getGroupCreationUser()
  * @method \App\SmallSchedulerModelBundle\Model\Task[] getTasks()
  * @method \App\SmallSchedulerModelBundle\Model\TaskFailureNotification[] getTasksFailuresNotifications()
- * @method \App\SmallSchedulerModelBundle\Model\UserGroup[] getUsersGroup()
+ * @method \App\SmallSchedulerModelBundle\Model\UserGroup[] getGroupUsers()
  */
 class Group extends Model
 {

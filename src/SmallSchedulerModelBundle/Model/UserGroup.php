@@ -11,7 +11,7 @@ use Sebk\SmallOrmBundle\Dao\Model;
  * @method getGroupId()
  * @method setGroupId($value)
  * @method \App\SmallSchedulerModelBundle\Model\Group getUserGroupGroup()
- * @method \Sebk\SmallUserBundle\Model\User getUserGroupUser()
+ * @method \App\SmallSchedulerModelBundle\Model\User getUserGroupUser()
  */
 class UserGroup extends Model
 {
