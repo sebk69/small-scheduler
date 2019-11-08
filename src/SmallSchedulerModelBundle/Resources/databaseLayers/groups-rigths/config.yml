@@ -1,0 +1,4 @@
+connection: default
+depends:
+  - SmallUser-1@SebkSmallUserBundle
+  - init
