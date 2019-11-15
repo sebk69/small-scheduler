@@ -1,7 +1,7 @@
 START TRANSACTION;
 
 CREATE TABLE `small_scheduler`.`user_group` (
-    `id` INT NOT NULL,
+    `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT NOT NULL,
     `group_id` INT NOT NULL,
     PRIMARY KEY (`id`),

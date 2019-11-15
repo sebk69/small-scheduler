@@ -8,8 +8,10 @@
 namespace App\Controller;
 
 use App\SmallSchedulerModelBundle\Dao\Group;
+use App\SmallSchedulerModelBundle\Dao\UserGroup;
+use Sebk\SmallOrmBundle\Factory\Connections;
 use Sebk\SmallOrmBundle\Factory\Dao;
-use Sebk\SmallUserBundle\Security\GroupVoter;
+use App\Security\Voter\GroupVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +37,7 @@ class GroupController extends Controller
         // filter by rigths
         foreach ($groups as $key => $group) {
             try {
-                $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $groups);
+                $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $group);
             } catch (AccessDeniedException $e) {
                 unset($groups[$key]);
             }
@@ -47,8 +49,9 @@ class GroupController extends Controller
     /**
      * @Route("/api/groups", methods={"POST"})
      */
-    public function postGroups(Dao $daoFactory, Request $request)
+    public function postGroups(Connections $connections, Dao $daoFactory, Request $request)
     {
+        $connections->get()->startTransaction();
         // Instaciate dao
         /** @var Group $groupDao */
         $groupDao = $daoFactory->get("SmallSchedulerModelBundle", "Group");
@@ -59,8 +62,26 @@ class GroupController extends Controller
 
         // Validate
         if($group->getValidator()->validate()) {
-            // persist
-            $group->persist();
+            if($group->fromDb) {
+                // Check rigths
+                $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $group);
+                // persist
+                $group->persist();
+            } else {
+                // persist group
+                $group->persist();
+
+                // The creator has rigths on group
+                /** @var UserGroup $userGroupDao */
+                $userGroupDao = $daoFactory->get("SmallSchedulerModelBundle", "UserGroup");
+                /** @var \App\SmallSchedulerModelBundle\Model\UserGroup $userGroup */
+                $userGroup = $userGroupDao->newModel();
+                $userGroup->setUserId($this->getUser()->getId());
+                $userGroup->setGroupId($group->getId());
+                $userGroup->persist();
+            }
+
+            $connections->get()->commit();
 
             // Load user
             $group->loadToOne("groupCreationUser");
@@ -83,6 +104,7 @@ class GroupController extends Controller
         // Load model
         /** @var \App\SmallSchedulerModelBundle\Model\Group $group */
         $group = $groupDao->findOneBy(["id" => $id]);
+        $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $group);
 
         // Validate
         if($group->getValidator()->validateDelete()) {

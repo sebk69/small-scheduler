@@ -5,10 +5,10 @@
  *  Under GNU GPL V3 licence
  */
 
-namespace Sebk\SmallUserBundle\Security;
+namespace App\Security\Voter;
 
-use App\SmallSchedulerModelBundle\Model\User;
 use App\SmallSchedulerModelBundle\Model\Group;
+use Sebk\SmallUserBundle\Security\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -40,6 +40,7 @@ class GroupVoter extends Voter
      * @param mixed $subject
      * @param TokenInterface $token
      * @return bool
+     * @throws \Sebk\SmallOrmBundle\Dao\DaoException
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
@@ -58,10 +59,11 @@ class GroupVoter extends Voter
     }
 
     /**
-     * Can user control group
-     * @param $subject
-     * @param $user
+     * Can user control group ?
+     * @param Group $subject
+     * @param User $user
      * @return bool
+     * @throws \Sebk\SmallOrmBundle\Dao\DaoException
      */
     protected function canControl(Group $subject, User $user)
     {

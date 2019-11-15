@@ -9,6 +9,7 @@ namespace App\Controller;
 
 
 use App\Scheduler\Submit;
+use App\Security\Voter\GroupVoter;
 use App\SmallSchedulerModelBundle\Dao\Group;
 use App\SmallSchedulerModelBundle\Dao\Task;
 use App\SmallSchedulerModelBundle\Dao\TaskChangeLog;
@@ -31,10 +32,11 @@ class TaskController extends Controller
         /** @var Group $daoGroup */
         $daoGroup = $daoFactory->get("SmallSchedulerModelBundle", "Group");
         try {
-            $daoGroup->findOneBy(["id" => $groupId]);
+            $group = $daoGroup->findOneBy(["id" => $groupId]);
         } catch (DaoEmptyException $e) {
             return new Response("This group don't exists", 404);
         }
+        $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $group);
 
         // Get tasks
         /** @var Task $daoTask */
@@ -58,6 +60,11 @@ class TaskController extends Controller
         // Make model
         /** @var \App\SmallSchedulerModelBundle\Model\Task $task */
         $task = $daoTask->makeModelFromStdClass(json_decode($request->getContent()));
+
+        // Check rigths
+        /** @var Group $daoGroup */
+        $daoGroup = $daoFactory->get("SmallSchedulerModelBundle", "Group");
+        $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $daoGroup->findOneBy(["id" => $task->getGroupId()]));
 
         // Validate
         if($task->getValidator()->validate()) {
@@ -107,6 +114,8 @@ class TaskController extends Controller
         // Build model
         /** @var \App\SmallSchedulerModelBundle\Model\Task $task */
         $task = $daoTask->findOneBy(["id" => $id]);
+        $task->loadToOne("taskGroup");
+        $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $task->getTaskGroup());
 
         // Delete
         $connections->get()->startTransaction();
