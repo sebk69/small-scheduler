@@ -38,6 +38,7 @@ class GroupController extends Controller
         foreach ($groups as $key => $group) {
             try {
                 $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $group);
+                $group->setAllowed(true);
             } catch (AccessDeniedException $e) {
                 unset($groups[$key]);
             }
@@ -116,5 +117,82 @@ class GroupController extends Controller
         }
 
         return new Response("");
+    }
+
+    /**
+     * @Route("/api/groups/rigths/{userId}", methods={"GET"})
+     */
+    public function getGroupRigths($userId, Dao $daoFactory)
+    {
+        // Check user can list group rigths
+        if(!$this->getUser()->hasRole("ROLE_ADMIN")) {
+            return new Response("Access denied", 401);
+        }
+
+        // Get all groups
+        /** @var Group $groupDao */
+        $groupDao = $daoFactory->get("SmallSchedulerModelBundle", "Group");
+        /** @var \App\SmallSchedulerModelBundle\Model\Group[] $groups */
+        $groups = $groupDao->findBy(["trash" => 0], [["group" => "groupUsers"]]);
+
+        // Set allowed field
+        foreach ($groups as $group) {
+            $group->setAllowed(false);
+            foreach ($group->getGroupUsers() as $groupUser) {
+                if($groupUser->getUserId() == $userId) {
+                    $group->setAllowed(true);
+                }
+            }
+        }
+
+        // Return groups
+        return new Response(json_encode($groups));
+    }
+
+    /**
+     * @Route("/api/groups/rigths/{userId}", methods={"PUT"})
+     */
+    public function postGroupRigths($userId, Connections $connections, Dao $daoFactory, Request $request)
+    {
+        // Check user can list group rigths
+        if(!$this->getUser()->hasRole("ROLE_ADMIN")) {
+            return new Response("Access denied", 401);
+        }
+
+        $connections->get()->startTransaction();
+
+        // Get dao
+        /** @var Group $groupDao */
+        $groupDao = $daoFactory->get("SmallSchedulerModelBundle", "Group");
+        /** @var UserGroup $userGroupDao */
+        $userGroupDao = $daoFactory->get("SmallSchedulerModelBundle", "UserGroup");
+
+        // Get data
+        $groupsStdClass = json_decode($request->getContent(), false);
+
+        foreach ($groupsStdClass as $groupStdClass) {
+            /** @var \App\SmallSchedulerModelBundle\Model\Group $group */
+            $group = $groupDao->makeModelFromStdClass($groupStdClass);
+            /** @var \App\SmallSchedulerModelBundle\Model\UserGroup $userGroup */
+            $userGroup = $userGroupDao->findBy(["groupId" => $group->getId(), "userId" => $userId]);
+
+            if($group->getAllowed()) {
+                if(count($userGroup) == 0) {
+                    /** @var \App\SmallSchedulerModelBundle\Model\UserGroup $newUserGroup */
+                    $newUserGroup = $userGroupDao->newModel();
+                    $newUserGroup->setGroupId($group->getId());
+                    $newUserGroup->setUserId($userId);
+                    $newUserGroup->persist();
+                }
+            } else {
+                if(count($userGroup) == 1) {
+                    $userGroup[0]->delete();
+                }
+            }
+        }
+
+        $connections->get()->commit();
+
+        return $this->getGroupRigths($userId, $daoFactory);
     }
 }
