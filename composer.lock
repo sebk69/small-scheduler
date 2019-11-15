@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "62008ff7321717f944bbce3074156c81",
+    "content-hash": "077cef5ef4df88a1fa984205d136a677",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2228,16 +2228,16 @@
         },
         {
             "name": "symfony/framework-bundle",
-            "version": "v4.1.7",
+            "version": "v4.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/framework-bundle.git",
-                "reference": "5f05a52128de2fdd1285bd58d19a912a97bd290f"
+                "reference": "2bc4a9a50b333ba08709c9007ec62b0345feac45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/5f05a52128de2fdd1285bd58d19a912a97bd290f",
-                "reference": "5f05a52128de2fdd1285bd58d19a912a97bd290f",
+                "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/2bc4a9a50b333ba08709c9007ec62b0345feac45",
+                "reference": "2bc4a9a50b333ba08709c9007ec62b0345feac45",
                 "shasum": ""
             },
             "require": {
@@ -2281,7 +2281,7 @@
                 "symfony/css-selector": "~3.4|~4.0",
                 "symfony/dom-crawler": "~3.4|~4.0",
                 "symfony/expression-language": "~3.4|~4.0",
-                "symfony/form": "^4.1",
+                "symfony/form": "^4.1.11|^4.2.3",
                 "symfony/lock": "~3.4|~4.0",
                 "symfony/messenger": "^4.1",
                 "symfony/polyfill-intl-icu": "~1.0",
@@ -2341,7 +2341,7 @@
             ],
             "description": "Symfony FrameworkBundle",
             "homepage": "https://symfony.com",
-            "time": "2018-10-31T09:09:42+00:00"
+            "time": "2019-04-16T09:42:42+00:00"
         },
         {
             "name": "symfony/http-foundation",
