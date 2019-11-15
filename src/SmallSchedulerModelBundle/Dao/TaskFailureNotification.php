@@ -21,7 +21,7 @@ class TaskFailureNotification extends AbstractDao
     /**
      * Get state of groups notifications for a user
      * @param $userId
-     * @return array
+     * @return \App\SmallSchedulerModelBundle\Model\TaskFailureNotification[]
      * @throws \ReflectionException
      * @throws \Sebk\SmallOrmBundle\Dao\DaoException
      * @throws \Sebk\SmallOrmBundle\Factory\ConfigurationException

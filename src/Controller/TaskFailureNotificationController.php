@@ -9,13 +9,16 @@
 namespace App\Controller;
 
 
+use App\Security\Voter\GroupVoter;
 use App\SmallSchedulerModelBundle\Dao\TaskFailureNotification;
 use Sebk\SmallOrmBundle\Factory\Connections;
 use Sebk\SmallOrmBundle\Factory\Dao;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TaskFailureNotificationController extends Controller
 {
@@ -26,10 +29,19 @@ class TaskFailureNotificationController extends Controller
         // get user state
         /** @var TaskFailureNotification $daoTaskFailureNotification */
         $daoTaskFailureNotification = $daoFactory->get("SmallSchedulerModelBundle", "TaskFailureNotification");
-        $state = $daoTaskFailureNotification->stateForUser($this->getUser()->getId());
+        $states = $daoTaskFailureNotification->stateForUser($this->getUser()->getId());
+
+        // Check rigths
+        foreach ($states as $key => $state) {
+            try {
+                $this->denyAccessUnlessGranted(GroupVoter::CONTROL, $state->getTaskFailureNotificationGroup());
+            } catch (AccessDeniedException $e) {
+                unset($states[$key]);
+            }
+        }
 
         // reponse
-        return new Response(json_encode($state));
+        return new Response(json_encode(array_values($states)));
     }
 
     /**
