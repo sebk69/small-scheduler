@@ -34,6 +34,8 @@ class Submit
      */
     public function testTasks()
     {
+        // Get date
+        $date = date('i G j n w');
         // Get dao
         /** @var Task $taskDao */
         $taskDao = $this->daoFactory->get("SmallSchedulerModelBundle", "Task");
@@ -44,7 +46,7 @@ class Submit
         // for each task
         foreach ($tasks as $task) {
             // Is it time to launch ?
-            if ($task->getEnabled() == 1 && $task->timeToLaunch()) {
+            if ($task->getEnabled() == 1 && $task->timeToLaunch($date)) {
                 // Check not already launched for this time
                 if($task->getSentTrace() != $task->getCurrentTrace()) {
                     // Submit

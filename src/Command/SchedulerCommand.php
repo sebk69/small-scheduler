@@ -43,8 +43,13 @@ class SchedulerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         while (true) {
-            $this->submit->testTasks();
-            sleep(15);
+            $pid = pcntl_fork();
+            if($pid) {
+                sleep(15);
+            } else {
+                $this->submit->testTasks();
+                exit;
+            }
         }
     }
 

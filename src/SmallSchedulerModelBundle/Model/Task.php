@@ -75,10 +75,10 @@ class Task extends Model
      * Is time to launch task
      * @return bool
      */
-    public function timeToLaunch()
+    public function timeToLaunch($date)
     {
         // Get current minute, hour, day, month, weekday
-        $time = explode(' ', date('i G j n w'));
+        $time = explode(' ', $date);
         // Split crontab by space
         $crontab = explode(' ', $this->getCronString());
         // Foreach part of crontab
