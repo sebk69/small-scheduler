@@ -35,17 +35,14 @@ class SchedulerCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('small-scheduler:scheduler')
-            ->setDescription('Scheduler')
+            ->setName('small-scheduler:scheduler-exec')
+            ->setDescription('Scheduler : execute crons')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        while (true) {
-            sleep(15);
-            exec("bin/console small-scheduler:scheduler-exec > /dev/null 2> /dev/null &");
-        }
+        $this->submit->testTasks();
     }
 
 }
