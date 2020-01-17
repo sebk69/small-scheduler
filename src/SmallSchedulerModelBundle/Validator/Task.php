@@ -41,7 +41,7 @@ class Task extends AbstractValidator
             $validated = false;
         } else {
             try {
-                $this->model->timeToLaunch();
+                $this->model->timeToLaunch(date('i G j n w'));
             } catch(\ParseError $e) {
                 $this->message .= "There is a syntax error in schedule\n";
                 $validated = false;
