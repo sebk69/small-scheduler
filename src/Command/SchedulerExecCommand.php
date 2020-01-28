@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class SchedulerCommand
  * @package App\Command
  */
-class SchedulerCommand extends Command
+class SchedulerExecCommand extends Command
 {
     protected $submit;
 

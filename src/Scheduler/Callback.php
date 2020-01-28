@@ -142,8 +142,8 @@ class Callback
             $messageDecoded["queue"],
             $messageDecoded["command"],
             $messageDecoded["returnValue"],
-            $messageDecoded["stdout"],
-            $messageDecoded["stderr"]
+            empty($messageDecoded["stdout"]) ? "" : $messageDecoded["stdout"],
+            empty($messageDecoded["stderr"]) ? "" : $messageDecoded["stderr"]
         );
 
         return true;
@@ -156,7 +156,7 @@ class Callback
     public function listen()
     {
         // Initialize message broker
-        $connection = new AMQPStreamConnection("message-broker", 5672, "guest", "guest");
+        $connection = new AMQPStreamConnection("message-broker", 5672, "guest", "LT6YkI7vkf9o6Wzc");
         $channel = $connection->channel();
         $channel->queue_declare(static::QUEUE_CALLBACK, false, false, false, false);
 
