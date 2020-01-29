@@ -77,54 +77,70 @@ class Task extends Model
      */
     public function timeToLaunch($date)
     {
-        // Get current minute, hour, day, month, weekday
-        $time = explode(' ', $date);
-        // Split crontab by space
-        $crontab = explode(' ', $this->getCronString());
-        // Foreach part of crontab
-        foreach ($crontab as $k => &$v) {
-            // Remove leading zeros to prevent octal comparison, but not if number is already 1 digit
-            $time[$k] = preg_replace('/^0+(?=\d)/', '', $time[$k]);
-            // 5,10,15 each treated as seperate parts
-            $v = explode(',', $v);
-            // Foreach part we now have
-            foreach ($v as &$v1) {
-                // Do preg_replace with regular expression to create evaluations from crontab
-                $v1 = preg_replace(
-                    // Regex
-                    array(
-                        // *
-                        '/^\*$/',
-                        // 5
-                        '/^\d+$/',
-                        // 5-10
-                        '/^(\d+)\-(\d+)$/',
-                        // */5
-                        '/^\*\/(\d+)$/'
-                    ),
-                    // Evaluations
-                    // trim leading 0 to prevent octal comparison
-                    array(
-                        // * is always true
-                        'true',
-                        // Check if it is currently that time,
-                        $time[$k] . '===\0',
-                        // Find if more than or equal lowest and lower or equal than highest
-                        '(\1<=' . $time[$k] . ' and ' . $time[$k] . '<=\2)',
-                        // Use modulus to find if true
-                        $time[$k] . '%\1===0'
-                    ),
-                    // Subject we are working with
-                    $v1
-                );
+        // Test minutes
+        if($this->getScheduledMinute() != "*") {
+            $detail = $this->getElementsToLaunch($this->getScheduledMinute());
+            if(!in_array(explode(" ", $date)[0], $detail)) {
+                return false;
             }
-            // Join 5,10,15 with `or` conditional
-            $v = '(' . implode(' or ', $v) . ')';
         }
-        // Require each part is true with `and` conditional
-        $crontab = implode(' and ', $crontab);
-        // Evaluate total condition to find if true
-        return eval('return ' . $crontab . ';');
+
+        // Test hours
+        if($this->getScheduledHour() != "*") {
+            $detail = $this->getElementsToLaunch($this->getScheduledHour());
+            if(!in_array(explode(" ", $date)[1], $detail)) {
+                return false;
+            }
+        }
+
+        // Test days
+        if($this->getScheduledDay() != "*") {
+            $detail = $this->getElementsToLaunch($this->getScheduledDay());
+            if(!in_array(explode(" ", $date)[2], $detail)) {
+                return false;
+            }
+        }
+
+        // Test months
+        if($this->getScheduledMonth() != "*") {
+            $detail = $this->getElementsToLaunch($this->getScheduledMonth());
+            if(!in_array(explode(" ", $date)[3], $detail)) {
+                return false;
+            }
+        }
+
+        // Test weekdays
+        if($this->getScheduledWeekday() != "*") {
+            $detail = $this->getElementsToLaunch($this->getScheduledWeekday());
+            if(!in_array(explode(" ", $date)[4], $detail)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Return time elements to launch
+     * @param $timeElement
+     */
+    public function getElementsToLaunch($timeElement) {
+        $result = [];
+
+        $enums = explode(",", $timeElement);
+        foreach ($enums as $enum) {
+            if(strstr($enum, "-")) {
+                $start = explode("-", $enum)[0];
+                $end = explode("-", $enum)[1];
+                for($i = $start; $i <= $end; $i++) {
+                    $result[] = $i;
+                }
+            } else {
+                $result[] = $enum;
+            }
+        }
+
+        return $result;
     }
 
     /**

@@ -156,7 +156,7 @@ class Callback
     public function listen()
     {
         // Initialize message broker
-        $connection = new AMQPStreamConnection("message-broker", 5672, "guest", "LT6YkI7vkf9o6Wzc");
+        $connection = new AMQPStreamConnection("message-broker", 5672, "guest", "guest");
         $channel = $connection->channel();
         $channel->queue_declare(static::QUEUE_CALLBACK, false, false, false, false);
 
