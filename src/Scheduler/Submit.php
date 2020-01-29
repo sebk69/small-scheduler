@@ -18,10 +18,14 @@ class Submit
     const QUEUE_PREFIX = "SmallScheduler#";
 
     protected $daoFactory;
+    protected $connection;
+    protected $channel;
 
     public function __construct(Dao $daoFactory)
     {
         $this->daoFactory = $daoFactory;
+        $this->connection = new AMQPStreamConnection("message-broker", 5672, "guest", "LT6YkI7vkf9o6Wzc");
+        $this->channel = $this->connection->channel();
     }
 
     /**
@@ -44,15 +48,21 @@ class Submit
         $tasks = $taskDao->listAllTasks();
 
         // for each task
-        foreach ($tasks as $task) {
-            // Is it time to launch ?
-            if ($task->getEnabled() == 1 && $task->timeToLaunch($date)) {
-                // Check not already launched for this time
-                if($task->getSentTrace() != $task->getCurrentTrace()) {
-                    // Submit
-                    $this->submitTask($task);
+	foreach ($tasks as $task) {
+            try {
+                // Is it time to launch ?
+                if ($task->getEnabled() == 1 && $task->timeToLaunch($date)) {
+		    // Check not already launched for this time
+                    if($task->getSentTrace() != $task->getCurrentTrace()) {
+                        // Submit
+			$this->submitTask($task);
+		    }
                 }
-            }
+	    } catch(\Exception $e) {
+		$f = fopen("/tmp/submit.log", "a+");
+		fwrite($f, "\nERROR\n".$e->getMessage());
+		fclose($f);
+	    }
         }
     }
 
@@ -72,11 +82,6 @@ class Submit
      */
     public function submitTask(\App\SmallSchedulerModelBundle\Model\Task $task)
     {
-        // Initialize message broker
-        $connection = new AMQPStreamConnection("message-broker", 5672, "guest", "guest");
-        $channel = $connection->channel();
-        $channel->queue_declare($this->getQueueName($task->getQueue()), false, false, false, false);
-
         // Create message
         $message = [
             "id" => $task->getId(),
@@ -84,14 +89,11 @@ class Submit
         ];
 
         // Send message
-        $channel->basic_publish(new AMQPMessage(json_encode($message)), "", $this->getQueueName($task->getQueue()));
+        $this->channel->queue_declare($this->getQueueName($task->getQueue()), false, false, false, false);
+        $this->channel->basic_publish(new AMQPMessage(json_encode($message)), "", $this->getQueueName($task->getQueue()));
 
         // Save time trace
         $task->saveSentTrace();
-
-        // Close connection
-        $channel->close();
-        $connection->close();
     }
 
 }

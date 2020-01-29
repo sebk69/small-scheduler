@@ -158,6 +158,6 @@ class Task extends Model
      */
     public function getCurrentTrace()
     {
-        return date('i G j n w');
+        return date('Y-m-d H:i');
     }
 }
