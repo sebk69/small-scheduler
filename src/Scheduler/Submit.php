@@ -24,7 +24,7 @@ class Submit
     public function __construct(Dao $daoFactory)
     {
         $this->daoFactory = $daoFactory;
-        $this->connection = new AMQPStreamConnection("message-broker", 5672, "guest", "LT6YkI7vkf9o6Wzc");
+        $this->connection = new AMQPStreamConnection("message-broker", 5672, "guest", "guest");
         $this->channel = $this->connection->channel();
     }
 
