@@ -36,7 +36,7 @@
         "version": "2.1.5"
     },
     "lcobucci/jwt": {
-        "version": "3.2.5"
+        "version": "3.3.3"
     },
     "lexik/jwt-authentication-bundle": {
         "version": "2.5",
@@ -175,6 +175,9 @@
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.11.0"
+    },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.18.1"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.9.0"
