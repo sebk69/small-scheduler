@@ -9,7 +9,7 @@
         "nelmio/cors-bundle": "^1.5",
         "php-amqplib/php-amqplib": "^2.8",
         "sebk/small-orm-bundle": "dev-symfony4",
-        "sebk/small-user-bundle": "dev-master",
+        "sebk/small-user-bundle": "dev-symfony4",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "4.1.*",
         "symfony/console": "*",
@@ -28,7 +28,10 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {
